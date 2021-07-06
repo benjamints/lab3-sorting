@@ -1,0 +1,76 @@
+#include "Header.h"
+
+void Swap(int* a, int* b)
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int Partition(int* arr, int low, int high)
+{
+    int pivot = arr[high];
+    int i = (low - 1); 
+
+    for (int j = low; j <= high - 1; j++)
+    {
+        if (arr[j] < pivot)
+        {
+            i++;
+            Swap(&arr[i], &arr[j]);
+        }
+    }
+    Swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+int PartitionCompare(int* arr, int low, int high, int& comp)
+{
+    int pivot = arr[high];
+    int i = (low - 1);
+
+    for (int j = low; (j <= high - 1) && (comp++); j++)
+    {
+        if ((arr[j] < pivot) && (comp++))
+        {
+            i++;
+            Swap(&arr[i], &arr[j]);
+        }
+    }
+    Swap(&arr[i + 1], &arr[high]);
+    return (i + 1);
+}
+
+void RunQuickSort(int* arr, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = Partition(arr, low, high);
+
+        RunQuickSort(arr, low, pi - 1);
+        RunQuickSort(arr, pi + 1, high);
+    }
+}
+
+void CompQuickSort(int* arr, int low, int high, int& comp)
+{
+    if ((low < high) && (++comp))
+    {
+        int pi = PartitionCompare(arr, low, high, comp);
+
+        CompQuickSort(arr, low, pi - 1, comp);
+        CompQuickSort(arr, pi + 1, high, comp);
+    }
+}
+
+void QuickSortCompare(int* arr, int n, int& comp)
+{
+    CompQuickSort(arr, 0, n - 1, comp);
+}
+
+void QuickSortRuntime(int* arr, int n, int& duration) {
+    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    RunQuickSort(arr, 0, n - 1);
+    high_resolution_clock::time_point t2 = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(t2 - t1).count();
+}
